@@ -13,7 +13,6 @@ Author: Ike Davis
 import sys
 import argparse
 from requests import get
-from time import sleep
 
 
 class Resty(object):

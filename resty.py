@@ -2,6 +2,8 @@
 """
 ===============================================================================
 A script that queries and reports REST status codes for given domain names.
+License: MIT
+Author: Ike Davis
 ===============================================================================
 """
 
@@ -98,7 +100,7 @@ class Resty(object):
                         # build list for later processing but print progress
                         msgList.append([code, url])
                         print('{}: {} - {}'.format(code, message, url))
-            except: 
+            except:
                 continue
         return msgList
 
@@ -119,8 +121,8 @@ def main(*args):
         prog=sys.argv[0][2:], description="""%(prog)s description""",
         epilog="""Author: rockhazard License: MIT""")
     parser.add_argument('--version', help='print version info then exit',
-                        version='%(prog)s v1.0 MIT License', action='version')
-    # parser.add_argument('--foo', help='Help for --foo', action='store_true')
+                        version='%(prog)s v1.0 by Ike Davis MIT License',
+                        action='version')
     parser.add_argument('-d', '--domains',
                         help='The locations of a text list of domains.',
                         nargs=1, metavar=('DOMAINS_FILE'))

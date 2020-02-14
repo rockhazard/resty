@@ -10,7 +10,7 @@ Author: Ike Davis
 
 import sys
 import argparse
-from requests import get
+from requests import get, exceptions as re
 
 
 class Resty(object):
@@ -87,23 +87,33 @@ class Resty(object):
             domainsSet = set(domains.read().splitlines())
             return list(domainsSet)
 
-    def get_status_codes(self, urlList):
+    def get_status_codes(self, urlList, timeout):
         msgList = []
         for url in urlList:
             try:
-                code = get(url, timeout=0.5).status_code
+                code = get(url, timeout=timeout).status_code
                 for status, message in self.codes.items():
                     if status == code:
                         # build list for later processing but print progress
                         msgList.append([code, url])
                         print('{}: {} - {}'.format(code, message, url))
+            except KeyboardInterrupt as e:
+                print('Program interrupted by user.')
+                sys.exit(1)
+            except re.SSLError as e:
+                print(e)
+                continue
             except:
-                print('No Response: {}'.format(url))
+                print('ERR: No response from: {}'.format(url))
                 continue
         return msgList
 
-    def get_1_code(self, url):
-        code = get(url, timeout=0.5).status_code
+    def get_1_code(self, url, timeout):
+        try:
+            code = get(url, timeout=timeout).status_code
+        except re.SSLError as e:
+            print(e)
+            sys.exit(1)
         for status, message in self.codes.items():
             if status == code:
                 return '{}: {} - {}'.format(code, message, url)
@@ -127,15 +137,26 @@ def main(*args):
     parser.add_argument('-s', '--status',
                         help='Get the REST status code for a single url.',
                         nargs=1, metavar=('URL'))
+    parser.add_argument('-t', '--timeout',
+                        help='Apply timeout in SECONDS (x[.x...]).',
+                        nargs=1, metavar=('SECONDS'))
 
     args = parser.parse_args()
-
+    if args.timeout:
+        try:
+            timeout = float(args.timeout[0])
+        except ValueError as e:
+            print(e)
+            sys.exit(1)
+    else:
+        timeout = 0.5
     if args.domains:
         urls = resty.get_urls(args.domains[0])
-        resty.get_status_codes(urls)
+        resty.get_status_codes(urls, timeout)
     elif args.status:
-        print(resty.get_1_code(args.status[0]))
+        print(resty.get_1_code(args.status[0], timeout))
 
 
-if __name__ == "__main__":  # if not imported as module, execute script
+
+if __name__ == "__main__":
     sys.exit(main(sys.argv[1:]))

@@ -100,8 +100,9 @@ class Resty(object):
             except KeyboardInterrupt as e:
                 print('Program interrupted by user.')
                 sys.exit(1)
-            except reqx.SSLError as e:
-                print(e)
+            except reqx.SSLError:
+                msgList.append(['SSL Error', url])
+                print('ERR: SSL Error Detected: {}'.format(url))
                 continue
             except:
                 print('ERR: No response from: {}'.format(url))
@@ -111,8 +112,8 @@ class Resty(object):
     def get_1_code(self, url, timeout):
         try:
             code = get(url, timeout=timeout).status_code
-        except reqx.SSLError as e:
-            print(e)
+        except reqx.SSLError:
+            print('ERR: SSL Error Detected: {}'.format(url))
             sys.exit(1)
         for status, message in self.codes.items():
             if status == code:

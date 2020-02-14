@@ -8,8 +8,6 @@ Author: Ike Davis
 """
 
 
-# from textwrap import dedent
-# from pathlib import fPath
 import sys
 import argparse
 from requests import get
@@ -100,6 +98,7 @@ class Resty(object):
                         msgList.append([code, url])
                         print('{}: {} - {}'.format(code, message, url))
             except:
+                print('No Response: {}'.format(url))
                 continue
         return msgList
 
@@ -118,7 +117,7 @@ def main(*args):
     """
     parser = argparse.ArgumentParser(
         prog=sys.argv[0][2:], description="""%(prog)s description""",
-        epilog="""Author: rockhazard License: MIT""")
+        epilog="""Author: Ike Davis, License: MIT""")
     parser.add_argument('--version', help='print version info then exit',
                         version='%(prog)s v1.0 by Ike Davis MIT License',
                         action='version')

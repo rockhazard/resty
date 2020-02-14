@@ -10,7 +10,7 @@ Author: Ike Davis
 
 import sys
 import argparse
-from requests import get, exceptions as re
+from requests import get, exceptions as reqx
 
 
 class Resty(object):
@@ -100,7 +100,7 @@ class Resty(object):
             except KeyboardInterrupt as e:
                 print('Program interrupted by user.')
                 sys.exit(1)
-            except re.SSLError as e:
+            except reqx.SSLError as e:
                 print(e)
                 continue
             except:
@@ -111,7 +111,7 @@ class Resty(object):
     def get_1_code(self, url, timeout):
         try:
             code = get(url, timeout=timeout).status_code
-        except re.SSLError as e:
+        except reqx.SSLError as e:
             print(e)
             sys.exit(1)
         for status, message in self.codes.items():

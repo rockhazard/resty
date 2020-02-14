@@ -104,6 +104,10 @@ class Resty(object):
                 msgList.append(['SSL Error', url])
                 print('ERR: SSL Error Detected: {}'.format(url))
                 continue
+            except reqx.MissingSchema:
+                msgList.append(['Invalid URL', url])
+                print('ERR: Invalid URL: {}'.format(url))
+                continue
             except:
                 print('ERR: No response from: {}'.format(url))
                 continue
@@ -114,6 +118,9 @@ class Resty(object):
             code = get(url, timeout=timeout).status_code
         except reqx.SSLError:
             print('ERR: SSL Error Detected: {}'.format(url))
+            sys.exit(1)
+        except reqx.MissingSchema:
+            print('ERR: Invalid URL: {}'.format(url))
             sys.exit(1)
         for status, message in self.codes.items():
             if status == code:

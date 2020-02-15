@@ -166,8 +166,8 @@ def main(*args):
             sys.exit(1)
     else:
         timeout = 0.5
-    if args.domains:
-        urls = resty.get_urls(args.domains[0])
+    if args.urls:
+        urls = resty.get_urls(args.urls[0])
         resty.get_status_codes(urls, timeout)
     elif args.status:
         print(resty.get_1_code(args.status[0], timeout))

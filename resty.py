@@ -142,7 +142,11 @@ def main(*args):
             raw text file or from a single url typed at the terminal.
 
             %(prog)s also test the SSL certificates for given urls.
-            It will report SSL errors to the terminal as they occur."""),
+            It will report SSL errors to the terminal as they occur.
+
+            %(prog)s requires fully-qualified domain names to work. This
+            means users must provide the protocol as well
+            (e.g. https://www.somedomain.org)."""),
         epilog="""Author: (c) Ike Davis, 2020, License: MIT""")
     parser.add_argument('--version', help='print version info then exit',
                         version='%(prog)s v1.0 by Ike Davis MIT License',

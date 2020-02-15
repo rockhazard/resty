@@ -23,7 +23,7 @@ class Resty():
 
     def __init__(self):
         super(Resty, self).__init__()
-        self._state = dict(quiet=False, timer=False)
+        self._state = dict(quiet=False, stopwatch=False)
         self.home = os.path.expanduser('~')
         self.msgList = []
         self.codes = {
@@ -107,14 +107,26 @@ class Resty():
             domainsSet = set(domains.read().splitlines())
             return list(domainsSet)
 
-    def generate_report(self, messages):
-        csv_doc = str(Path(self.home, 'url_status_codes.csv'))
-        with open(csv_doc.format(self.home), 'w', newline='') as csvfile:
-            status_writer = csv.writer(csvfile, delimiter=',',
-                                       quotechar='\'', quoting=csv.QUOTE_MINIMAL)
-            for message in messages:
-                status_writer.writerow(
-                    [message[0]] + [message[1]] + [message[2]])
+    def generate_report(self, data, filename):
+        parent = str(Path(filename).parent)
+        if Path(parent).exists():
+            report = filename
+        else:
+            sys.exit('ERROR: report not written; file path does not exist.')
+
+        with open(report, 'w', newline='', encoding='utf-8') as fn:
+            if report.endswith('csv'):
+                report_csv_writer = csv.writer(fn, delimiter=',',
+                                               quotechar='\'', quoting=csv.QUOTE_MINIMAL)
+                # csv column headers
+                report_csv_writer.writerow(['Code'] + ['Message'] + ['URL'])
+                for cell in data:
+                    report_csv_writer.writerow(
+                        [cell[0]] + [cell[1]] + [cell[2]])
+            else:
+                for line in data:
+                    print('{}: \'{}\' - {}'.format(
+                        str(line[0]), line[1], line[2]), file=fn, end='\n')
 
     def get_status_codes(self, urlList, timeout):
         for url in urlList:
@@ -127,8 +139,7 @@ class Resty():
                         if not self._state['quiet']:
                             print('{}: {} - {}'.format(code, message, url))
             except KeyboardInterrupt:
-                print('Program interrupted by user.')
-                sys.exit(1)
+                sys.exit('Program interrupted by user.')
             except reqx.SSLError:
                 self.msgList.append(['ERR', 'SSL Error', url])
                 if not self._state['quiet']:
@@ -141,7 +152,7 @@ class Resty():
                 continue
             except:
                 if not self._state['quiet']:
-                    print('ERR: No response: {}'.format(url))
+                    print('ERR: No Response: {}'.format(url))
                 continue
 
         return self.msgList
@@ -150,11 +161,9 @@ class Resty():
         try:
             code = get(url, timeout=timeout).status_code
         except reqx.SSLError:
-            print('ERR: SSL Error Detected: {}'.format(url))
-            sys.exit(1)
+            sys.exit('ERR: SSL Error Detected: {}'.format(url))
         except reqx.MissingSchema:
-            print('ERR: Invalid URL: {}'.format(url))
-            sys.exit(1)
+            sys.exit('ERR: Invalid URL: {}'.format(url))
         for status, message in self.codes.items():
             if status == code:
                 return '{}: {} - {}'.format(code, message, url)
@@ -183,13 +192,15 @@ def main(*args):
                         version='%(prog)s v1.0 by Ike Davis MIT License',
                         action='version')
     parser.add_argument('-u', '--urls',
-                        help='Report REST status codes for urls in URLS_FILE.',
+                        help='Output REST status codes to terminal for urls in URLS_FILE.',
                         nargs=1, metavar=('URLS_FILE'))
     parser.add_argument('-r', '--report',
-                        help='Write REST status csv for urls in URLS_FILE.',
-                        nargs=1, metavar=('URLS_FILE'))
-    parser.add_argument('-s', '--status',
-                        help='Report the REST status code for a single url.',
+                        help=dedent('Write REST status csv or raw text file to\
+                         REPORT filename for urls in URLS_FILE. CSV or TXT format\
+                          is determined by filename extension.'),
+                        nargs=2, metavar=('URLS_FILE', 'REPORT'))
+    parser.add_argument('-c', '--code',
+                        help='Display the REST status code for a single url.',
                         nargs=1, metavar=('URL'))
     parser.add_argument('-t', '--timeout',
                         help='Set HTTP requests timeout in SECONDS (x[.x...]).',
@@ -197,13 +208,13 @@ def main(*args):
     parser.add_argument('-q', '--quiet',
                         help='Suppress output of progress to the terminal.',
                         action='store_true')
-    parser.add_argument('-c', '--timer',
+    parser.add_argument('-s', '--stopwatch',
                         help='Time the completion speed of the report.',
                         action='store_true')
 
     args = parser.parse_args()
-    if args.timer:
-        resty.set_state('timer', True)
+    if args.stopwatch:
+        resty.set_state('stopwatch', True)
         start_timer = time()
     if args.quiet:
         resty.set_state('quiet', args.quiet)
@@ -218,14 +229,14 @@ def main(*args):
     if args.urls:
         urls = resty.get_urls(args.urls[0])
         resty.get_status_codes(urls, timeout)
-    elif args.status:
+    elif args.code:
         print(resty.get_1_code(args.status[0], timeout))
     elif args.report:
         urls = resty.get_urls(args.report[0])
         resty.get_status_codes(urls, timeout)
-        resty.generate_report(resty.msgList)
+        resty.generate_report(resty.msgList, args.report[1])
 
-    if resty.get_state('timer'):
+    if resty.get_state('stopwatch'):
         end_timer = time()
         elapsed = end_timer - start_timer
         resty.time_proc(elapsed)

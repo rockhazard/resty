@@ -189,7 +189,7 @@ def main(*args):
             domain name, as in: https://www.example.org"""),
         epilog="""Author: (c) Ike Davis, 2020, License: MIT""")
     parser.add_argument('--version', help='print version info then exit',
-                        version='%(prog)s v1.0 by Ike Davis MIT License',
+                        version='%(prog)s v1.1 by Ike Davis MIT License',
                         action='version')
     parser.add_argument('-u', '--urls',
                         help='Output REST status codes to terminal for urls in URLS_FILE.',

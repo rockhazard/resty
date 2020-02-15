@@ -176,7 +176,7 @@ def main(*args):
     COMMANDLINE OPTIONS
     """
     parser = argparse.ArgumentParser(
-        prog=sys.argv[0][2:], description=dedent("""\
+        prog=Path(sys.argv[0][2:]).name, description=dedent("""\
             %(prog)s retrieves the HTTP REST status codes for given URLs.
             The program reports these codes to the terminal for analysis.
             These source URLs are taken from a return-separated list in a

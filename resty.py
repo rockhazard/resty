@@ -10,6 +10,7 @@ Author: Ike Davis
 
 import sys
 import argparse
+from textwrap import dedent
 from requests import get, exceptions as reqx
 
 
@@ -97,7 +98,7 @@ class Resty(object):
                         # build list for later processing but print progress
                         msgList.append([code, url])
                         print('{}: {} - {}'.format(code, message, url))
-            except KeyboardInterrupt as e:
+            except KeyboardInterrupt:
                 print('Program interrupted by user.')
                 sys.exit(1)
             except reqx.SSLError:
@@ -109,7 +110,7 @@ class Resty(object):
                 print('ERR: Invalid URL: {}'.format(url))
                 continue
             except:
-                print('ERR: No response from: {}'.format(url))
+                print('ERR: No response: {}'.format(url))
                 continue
         return msgList
 
@@ -134,19 +135,26 @@ def main(*args):
     COMMANDLINE OPTIONS
     """
     parser = argparse.ArgumentParser(
-        prog=sys.argv[0][2:], description="""%(prog)s description""",
-        epilog="""Author: Ike Davis, License: MIT""")
+        prog=sys.argv[0][2:], description=dedent("""\
+            %(prog)s retrieves the HTTP REST status codes for given urls.
+            The program reports these codes to the terminal for analysis.
+            These source urls are taken from a return-separated list in a
+            raw text file or from a single url typed at the terminal.
+
+            %(prog)s also test the SSL certificates for given urls.
+            It will report SSL errors to the terminal as they occur."""),
+        epilog="""Author: (c) Ike Davis, 2020, License: MIT""")
     parser.add_argument('--version', help='print version info then exit',
                         version='%(prog)s v1.0 by Ike Davis MIT License',
                         action='version')
-    parser.add_argument('-d', '--domains',
-                        help='The locations of a text list of domains.',
-                        nargs=1, metavar=('DOMAINS_FILE'))
+    parser.add_argument('-u', '--urls',
+                        help='Report REST status codes for urls in URLS_FILE.',
+                        nargs=1, metavar=('URLS_FILE'))
     parser.add_argument('-s', '--status',
-                        help='Get the REST status code for a single url.',
+                        help='Report the REST status code for a single url.',
                         nargs=1, metavar=('URL'))
     parser.add_argument('-t', '--timeout',
-                        help='Apply timeout in SECONDS (x[.x...]).',
+                        help='Set HTTP requests timeout in SECONDS (x[.x...]).',
                         nargs=1, metavar=('SECONDS'))
 
     args = parser.parse_args()

@@ -2,11 +2,18 @@
 
 ### Come Again?
 
-This generates a report of status codes for given domain names, either singly or from a return-separated text list, as seen in the testurls.txt file.
+This generates a report of HTTP REST status codes for given domains.
 
 ### Why?
 
 So folks can figure out if their domains are working properly.
+
+### Features
+- Reports HTTP REST status codes for an arbitrary number of given urls.
+- Tests the SSL certificates for given urls, reporting any errors.
+
+### Dependencies
+If not using the binaries, Python 3.6+ and the requests library are required.
 
 ### Usage
 

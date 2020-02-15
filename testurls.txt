@@ -58,3 +58,5 @@ https://httpstat.us/511
 https://httpstat.us/520
 https://httpstat.us/522
 https://httpstat.us/52
+https://expired.badssl.com/
+https://revoked.badssl.com/

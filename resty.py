@@ -136,16 +136,16 @@ def main(*args):
     """
     parser = argparse.ArgumentParser(
         prog=sys.argv[0][2:], description=dedent("""\
-            %(prog)s retrieves the HTTP REST status codes for given urls.
+            %(prog)s retrieves the HTTP REST status codes for given URLs.
             The program reports these codes to the terminal for analysis.
-            These source urls are taken from a return-separated list in a
-            raw text file or from a single url typed at the terminal.
+            These source URLs are taken from a return-separated list in a
+            raw text file or from a single URL typed at the terminal.
 
-            The program also tests the SSL certificates for given urls.
+            The program also tests the SSL certificates for given URLs.
             It will report SSL errors to the terminal as they occur.
 
-            Fully qualified domain names and protocols are required, as in:
-            https://www.example.org"""),
+            Valid URLs must contain the protocol and the fully qualified 
+            domain name, as in: https://www.example.org"""),
         epilog="""Author: (c) Ike Davis, 2020, License: MIT""")
     parser.add_argument('--version', help='print version info then exit',
                         version='%(prog)s v1.0 by Ike Davis MIT License',

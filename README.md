@@ -2,7 +2,7 @@
 
 ### Come Again?
 
-This generates a report of HTTP REST status codes for given domains.
+This generates a report of [HTTP REST status codes](https://en.wikipedia.org/wiki/List_of_HTTP_status_codes) for given domains.
 
 ### Why?
 
@@ -17,7 +17,7 @@ If not using the binaries, Python 3.6+ and the requests library are required.
 
 ### Usage
 
-type `rest.py -h` at a terminal.
+type `resty.py -h` at a terminal.
 
 ### ToDo
 

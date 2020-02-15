@@ -1,4 +1,4 @@
-# Resty: Query Domain Status Codes
+# Resty: Query REST Status Codes
 
 ### Come Again?
 

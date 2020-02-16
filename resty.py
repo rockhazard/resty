@@ -127,10 +127,14 @@ class Resty():
                     print('{}: \'{}\' - {}'.format(
                         str(line[0]), line[1], line[2]), file=fn, end='\n')
 
-    def get_status_codes(self, urlList, timeout):
+    def get_status_codes(self, urlList, timeout, iter_codes=False):
         for url in urlList:
             try:
-                code = get(url, timeout=timeout).status_code
+                if iter_codes: # scaffold for test
+                    code = next(iter_codes)
+
+                else:
+                    code = get(url, timeout=timeout).status_code
                 for status, message in self.codes.items():
                     if status == code:
                         # build list for later processing but print progress
@@ -156,9 +160,12 @@ class Resty():
 
         return self.msgList
 
-    def get_1_code(self, url, timeout):
-        try:
-            code = get(url, timeout=timeout).status_code
+    def get_1_code(self, url, timeout, code=False):
+        try: # scaffold for test
+            if code:
+                code = code()
+            else:
+                code = get(url, timeout=timeout).status_code
         except reqx.SSLError:
             sys.exit('ERR: SSL Error Detected: {}'.format(url))
         except reqx.MissingSchema:

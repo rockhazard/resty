@@ -7,13 +7,14 @@ License: MIT
 ===============================================================================
 """
 
-import sys
 import argparse
-import os
 import csv
-from time import time
+import os
+import sys
 from pathlib import Path
 from textwrap import dedent
+from time import time
+
 from requests import get, exceptions as reqx
 
 
@@ -98,7 +99,9 @@ class Resty():
         sec = sec % 60
         hours = mins // 60
         mins = mins % 60
-        print("Finished in {0}:{1}:{2}".format(int(hours), int(mins), sec))
+        now = "Finished in {0}:{1}:{2}".format(int(hours), int(mins), sec)
+        print(now)
+        return [[hours, mins], now]
 
     def get_urls(self, urls):
         with open(urls) as domains:
@@ -127,10 +130,15 @@ class Resty():
                     print('{}: \'{}\' - {}'.format(
                         str(line[0]), line[1], line[2]), file=fn, end='\n')
 
+        number_of_urls = len(data)
+        if not self._state['quiet']:
+            print('Number of URLs tested: ' + str(number_of_urls))
+        return number_of_urls
+
     def get_status_codes(self, urlList, timeout, iter_codes=False):
         for url in urlList:
             try:
-                if iter_codes: # scaffold for test
+                if iter_codes:  # scaffold for test
                     code = next(iter_codes)
 
                 else:
@@ -161,7 +169,7 @@ class Resty():
         return self.msgList
 
     def get_1_code(self, url, timeout, code=False):
-        try: # scaffold for test
+        try:  # scaffold for test
             if code:
                 code = code()
             else:

@@ -3,11 +3,13 @@
 
 
 import unittest
+from textwrap import dedent
 from unittest import mock
+
 from resty import Resty
 
 
-class Test(unittest.TestCase):
+class RestyTest(unittest.TestCase):
 
     def setUp(self):
         self.Resty1 = Resty()
@@ -74,8 +76,8 @@ class Test(unittest.TestCase):
             'https://httpstat.us/522',
             'https://httpstat.us/524'
         ]
-        self.urls_source = \
-            'https://httpstat.us/10o\n\
+        self.urls_source = dedent("""\
+            https://httpstat.us/100\n\
             https://httpstat.us/101\n\
             https://httpstat.us/102\n\
             https://httpstat.us/103\n\
@@ -134,7 +136,7 @@ class Test(unittest.TestCase):
             https://httpstat.us/511\n\
             https://httpstat.us/520\n\
             https://httpstat.us/522\n\
-            https://httpstat.us/524\n'
+            https://httpstat.us/524\n""")
 
         self.codes = [
             100,
@@ -325,31 +327,52 @@ class Test(unittest.TestCase):
             [524, 'A timeout occurred', 'https://httpstat.us/524']
         ]
 
+    """tests for get_status_codes"""
+
     def test_get_status_codes(self):
         """test msgList build"""
         self.Resty1._state['quiet'] = True
         codes = iter(self.codes)
         result_get_status_codes = self.Resty1.get_status_codes(
-            self.testUrls, timeout=0.1, iter_codes=codes)
+            self.testUrls, timeout=0.0002, iter_codes=codes)
         # assert result of tested method call
         self.assertEqual(result_get_status_codes, self.msgList, 'Not equal')
+
+    """tests for get_1_code"""
 
     def test_get_1_code(self):
         """test single line message formatting"""
         result_get_1_code = self.Resty1.get_1_code(
-            'https://httpstat.us/200', timeout=0.8, code=self.code)
+            'https://httpstat.us/200', timeout=0.0002, code=self.code)
         # assert result of tested method call
         self.assertEqual(result_get_1_code,
                          '200: OK - https://httpstat.us/200', 'Not equal')
 
+    """tests for get_urls"""
+
     def test_get_urls(self):
-        # result_get_urls = self.Resty1.get_urls()
-        pass
+        """test file parsing into per-line list"""
+        with mock.patch('builtins.open', mock.mock_open(read_data=self.urls_source)):
+            with open('/dev/null') as f:
+                # print('contents of file from the mock patch: ' + f.read())
+                result_test_get_urls = self.Resty1.get_urls(f)
+                # function returns a set that is sorted for testing
+                self.assertEqual(sorted(result_test_get_urls), self.testUrls, 'Not equal')
+
+    """tests for time_proc"""
+
     def test_time_proc(self):
-        # result_time_proc = self.Resty1.time_proc()
-        pass
+        """test time formatting"""
+        self.Resty1._state['quiet'] = False
+        result_test_time_proc = self.Resty1.time_proc(4200)
+        self.assertEqual(result_test_time_proc, [[1, 10], 'Finished in 1:10:0'], 'Not equal')
+
+    """tests for generate_report"""
+
     def test_generate_report(self):
-        # result_generate_report = self.Resty1.generate_report()
+        """test file formatting"""
+        # result_generate_report = self.Resty1.ggenerate_report(self.msgList)
+        # self.assertEqual(result_test_generate_report, 'result_output', 'Not equal')
         pass
 
 

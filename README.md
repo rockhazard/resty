@@ -1,4 +1,4 @@
-# Resty: Query URLs for REST Status Codes
+# Resty: Batch Query URLs for REST Status Codes
 
 ### Come Again?
 

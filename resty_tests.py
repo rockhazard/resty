@@ -13,14 +13,14 @@ class Test(unittest.TestCase):
 
     def test_get_status_codes(self):
         result_get_status_codes = self.Resty1.get_status_codes(
-            ['https://httpstat.us/200'], timeout=0.5)
+            ['https://httpstat.us/200'], timeout=0.8)
         # assert result of tested method call
         self.assertEqual(result_get_status_codes, [
                          [200, 'OK', 'https://httpstat.us/200']], 'Not equal')
 
     def test_get_1_code(self):
         result_get_1_code = self.Resty1.get_1_code(
-            'https://httpstat.us/200', timeout=0.5)
+            'https://httpstat.us/200', timeout=0.8)
         # assert result of tested method call
         self.assertEqual(result_get_1_code,
                          '200: OK - https://httpstat.us/200', 'Not equal')

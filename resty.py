@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
 """
 ===============================================================================
-A script that queries and reports REST status codes for given domain names.
-License: MIT
+A script that queries URLs and reports REST status codes for given domain names.
 Author: Ike Davis
+License: MIT
 ===============================================================================
 """
-
 
 import sys
 import argparse

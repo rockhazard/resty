@@ -106,8 +106,11 @@ class Resty():
     def get_urls(self, urls):
         with open(urls) as domains:
             # strip duplicate urls
-            domainsSet = set(domains.read().splitlines())
-            return list(domainsSet)
+            domainsSet = list(set(domains.read().splitlines()))
+            for line in domainsSet:
+                if line.startswith(('#','//', '"""')):
+                    domainsSet.remove(line)
+            return domainsSet
 
     def generate_report(self, data, filename):
         parent = str(Path(filename).parent)

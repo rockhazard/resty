@@ -1,3 +1,8 @@
+# Start comments with #, //, or """. The program ignores these lines.
+# The lines below are test URLs. They will return the REST status code
+# corresponding to the number at the end of each URL, unless the response
+# times out, the domain is not configured to return the code, or there
+# is an SSL error. Note that one SSL error is intentional.
 https://httpstat.us/100
 https://httpstat.us/101
 https://httpstat.us/102

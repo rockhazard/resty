@@ -23,7 +23,7 @@ class Resty():
 
     def __init__(self):
         super(Resty, self).__init__()
-        self._state = dict(quiet=False, stopwatch=False)
+        self._state = dict(quiet=False, stopwatch=False, timeout=0.5)
         self.home = os.path.expanduser('~')
         self.msgList = []
         self.codes = {
@@ -230,24 +230,26 @@ def main(*args):
                         action='store_true')
 
     args = parser.parse_args()
-    if args.stopwatch:
-        resty.set_state('stopwatch', True)
-        start_timer = time()
     if args.quiet:
         resty.set_state('quiet', args.quiet)
+    if args.stopwatch == True and resty.get_state('quiet') == False:
+        resty.set_state('stopwatch', True)
+        start_timer = time()
+    else:
+        print('Stopwatch feature is incompatible with -q/--quiet option.')
     if args.timeout:
         try:
             timeout = float(args.timeout[0])
         except ValueError as e:
-            print(e)
-            sys.exit(1)
+            timeout = resty.get_state('timeout')
+            print(e, ' setting timeout to {}.'.format(timeout))
     else:
-        timeout = 0.5
+        timeout = resty.get_state('timeout')
     if args.urls:
         urls = resty.get_urls(args.urls[0])
         resty.get_status_codes(urls, timeout)
     elif args.code:
-        print(resty.get_1_code(args.status[0], timeout))
+        print(resty.get_1_code(args.code[0], timeout))
     elif args.report:
         urls = resty.get_urls(args.report[0])
         resty.get_status_codes(urls, timeout)

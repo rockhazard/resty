@@ -13,7 +13,7 @@ import os
 import sys
 from pathlib import Path
 from textwrap import dedent
-from time import time
+from time import time, localtime
 
 from requests import get, exceptions as reqx
 
@@ -24,6 +24,9 @@ class Resty():
     def __init__(self):
         super(Resty, self).__init__()
         self._state = dict(quiet=False, stopwatch=False, timeout=0.5)
+        lt = localtime()
+        self.timeStamp = '{}/{}/{} @ {}:{}:{}'.format(lt[0], lt[1], lt[2],
+                                                      lt[3], lt[4], lt[5])
         self.home = os.path.expanduser('~')
         self.msgList = []
         self.codes = {
@@ -108,7 +111,7 @@ class Resty():
             # strip duplicate urls
             domainsSet = list(set(domains.read().splitlines()))
             for line in domainsSet:
-                if line.startswith(('#','//', '"""')):
+                if line.startswith(('#', '//', '"""')):
                     domainsSet.remove(line)
             return domainsSet
 
@@ -153,7 +156,7 @@ class Resty():
                         if not self._state['quiet']:
                             print('{}: {} - {}'.format(code, message, url))
             except KeyboardInterrupt:
-                sys.exit('Program interrupted by user.')
+                sys.exit('Program interrupted by user on {}.'.format(self.timeStamp))
             except reqx.SSLError:
                 self.msgList.append(['ERR', 'SSL Error', url])
                 if not self._state['quiet']:

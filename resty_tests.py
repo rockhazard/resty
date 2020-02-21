@@ -377,5 +377,4 @@ class RestyTest(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    # call unittest module
     unittest.main()

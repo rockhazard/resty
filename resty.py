@@ -14,11 +14,12 @@ import sys
 from pathlib import Path
 from textwrap import dedent
 from time import time, localtime
+from math import trunc
 
 from requests import get, exceptions as reqx
 
 
-class Resty():
+class Resty:
     """domain querying class"""
 
     def __init__(self):
@@ -27,6 +28,7 @@ class Resty():
         lt = localtime()
         self.timeStamp = '{}/{}/{} @ {}:{}:{}'.format(lt[0], lt[1], lt[2],
                                                       lt[3], lt[4], lt[5])
+        self.urls_processed = False
         self.home = os.path.expanduser('~')
         self.msgList = []
         self.codes = {
@@ -102,7 +104,8 @@ class Resty():
         sec = sec % 60
         hours = mins // 60
         mins = mins % 60
-        now = "Finished in {0}:{1}:{2}".format(int(hours), int(mins), sec)
+        now = "Tested {} URLs in {}:{}:{}".format(self.urls_processed, int(hours),
+                                               int(mins), trunc(sec))
         print(now)
         return [[hours, mins], now]
 
@@ -136,10 +139,7 @@ class Resty():
                     print('{}: \'{}\' - {}'.format(
                         str(line[0]), line[1], line[2]), file=fn, end='\n')
 
-        number_of_urls = len(data)
-        if not self._state['quiet']:
-            print('Number of URLs tested: ' + str(number_of_urls))
-        return number_of_urls
+        return len(data)
 
     def get_status_codes(self, urlList, timeout, iter_codes=False):
         for url in urlList:
@@ -171,7 +171,8 @@ class Resty():
                 if not self._state['quiet']:
                     print('ERR: No Response: {}'.format(url))
                 continue
-
+        if not self._state['quiet']:
+            self.urls_processed = str(len(self.msgList))
         return self.msgList
 
     def get_1_code(self, url, timeout, code=False):
@@ -262,6 +263,7 @@ def main(*args):
         end_timer = time()
         elapsed = end_timer - start_timer
         resty.time_proc(elapsed)
+        print('Finished on ' + resty.timeStamp)
 
 
 if __name__ == "__main__":

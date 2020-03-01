@@ -23,7 +23,6 @@ class Resty:
     """domain querying class"""
 
     def __init__(self):
-        super(Resty, self).__init__()
         self._state = dict(quiet=False, stopwatch=False, timeout=0.5)
         lt = localtime()
         self.timeStamp = '{}/{}/{} @ {}:{}:{}'.format(lt[0], lt[1], lt[2],
@@ -105,7 +104,7 @@ class Resty:
         hours = mins // 60
         mins = mins % 60
         now = "Tested {} URLs in {}:{}:{}".format(self.urls_processed, int(hours),
-                                               int(mins), trunc(sec))
+                                                  int(mins), trunc(sec))
         print(now)
         return [[hours, mins], now]
 
@@ -238,7 +237,7 @@ def main(*args):
     if args.stopwatch and not resty.get_state('quiet'):
         resty.set_state('stopwatch', True)
         start_timer = time()
-    else:
+    elif args.stopwatch and resty.get_state('quiet'):
         print('Stopwatch feature is incompatible with -q/--quiet option.')
     if args.timeout:
         try:
